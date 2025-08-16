@@ -1,0 +1,19 @@
+{
+  "name": "3-tier-serverless-app",
+  "version": "1.0.0",
+  "description": "3-tier serverless Pokemon application with React frontend, Lambda backend, and DynamoDB",
+  "scripts": {
+    "install-all": "cd backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && cd ../database && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && cd ../frontend && npm install",
+    "dev-backend": "cd backend && source venv/bin/activate && python3 local_server.py",
+    "dev-frontend": "cd frontend && npm start",
+    "build-frontend": "cd frontend && npm run build",
+    "deploy-database": "cd database && source venv/bin/activate && cdk deploy",
+    "deploy-backend": "cd backend && source venv/bin/activate && cdk deploy",
+    "deploy-frontend": "cd frontend && npm run build && cdk deploy",
+    "deploy-all": "npm run deploy-database && npm run deploy-backend && npm run deploy-frontend",
+    "destroy-all": "cd database && source venv/bin/activate && cdk destroy && cd ../backend && source venv/bin/activate && cdk destroy && cd ../frontend && cdk destroy"
+  },
+  "keywords": ["aws", "serverless", "react", "lambda", "dynamodb", "cdk"],
+  "author": "",
+  "license": "MIT"
+}

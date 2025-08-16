@@ -32,8 +32,24 @@ jobs:
     - name: Install CDK
       run: npm install -g aws-cdk
       
-    - name: Install dependencies
-      run: npm run install-all
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install -r requirements.txt
+        
+    - name: Install Database Dependencies
+      run: |
+        cd database
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install -r requirements.txt
+        
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm install
       
     - name: Deploy Database
       run: npm run deploy-database

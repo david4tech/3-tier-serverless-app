@@ -33,7 +33,7 @@ jobs:
       run: npm install -g aws-cdk
       
     - name: Bootstrap CDK
-      run: cdk bootstrap
+      run: cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-east-1
       
     - name: Install Backend Dependencies
       run: |

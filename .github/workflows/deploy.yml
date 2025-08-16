@@ -70,4 +70,7 @@ jobs:
       run: |
         cd frontend
         npm run build
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install aws-cdk-lib constructs
         cdk deploy --require-approval never

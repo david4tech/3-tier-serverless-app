@@ -52,10 +52,19 @@ jobs:
         npm install
       
     - name: Deploy Database
-      run: npm run deploy-database
+      run: |
+        cd database
+        . venv/bin/activate
+        cdk deploy --require-approval never
       
     - name: Deploy Backend
-      run: npm run deploy-backend
+      run: |
+        cd backend
+        . venv/bin/activate
+        cdk deploy --require-approval never
       
     - name: Deploy Frontend
-      run: npm run deploy-frontend
+      run: |
+        cd frontend
+        npm run build
+        cdk deploy --require-approval never

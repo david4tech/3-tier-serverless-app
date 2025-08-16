@@ -24,19 +24,48 @@ class BackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
-        # Lambda Function
-        pokemon_lambda = _lambda.Function(
-            self, "PokemonHandler",
+        # Lambda functions for each CRUD operation
+        get_pokemons_lambda = _lambda.Function(
+            self, "GetPokemonsHandler",
             runtime=_lambda.Runtime.PYTHON_3_9,
-            handler="pokemon_handler.lambda_handler",
-            code=_lambda.Code.from_asset("lambda"),
-            environment={
-                "TABLE_NAME": pokemon_table.table_name
-            }
+            handler="get_pokemons.lambda_handler",
+            code=_lambda.Code.from_asset("lambda")
+        )
+        
+        get_pokemon_lambda = _lambda.Function(
+            self, "GetPokemonHandler",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="get_pokemon.lambda_handler",
+            code=_lambda.Code.from_asset("lambda")
+        )
+        
+        create_pokemon_lambda = _lambda.Function(
+            self, "CreatePokemonHandler",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="create_pokemon.lambda_handler",
+            code=_lambda.Code.from_asset("lambda")
+        )
+        
+        update_pokemon_lambda = _lambda.Function(
+            self, "UpdatePokemonHandler",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="update_pokemon.lambda_handler",
+            code=_lambda.Code.from_asset("lambda")
+        )
+        
+        delete_pokemon_lambda = _lambda.Function(
+            self, "DeletePokemonHandler",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="delete_pokemon.lambda_handler",
+            code=_lambda.Code.from_asset("lambda")
         )
 
         # Grant Lambda permissions to DynamoDB
-        pokemon_table.grant_read_write_data(pokemon_lambda)
+        pokemon_table.grant_read_data(get_pokemons_lambda)
+        pokemon_table.grant_read_data(get_pokemon_lambda)
+        pokemon_table.grant_write_data(create_pokemon_lambda)
+        pokemon_table.grant_read_write_data(update_pokemon_lambda)
+        pokemon_table.grant_write_data(delete_pokemon_lambda)
 
         # API Gateway
         api = apigateway.RestApi(
@@ -50,18 +79,22 @@ class BackendStack(Stack):
             )
         )
 
-        # Lambda integration
-        pokemon_integration = apigateway.LambdaIntegration(pokemon_lambda)
+        # Lambda integrations
+        get_pokemons_integration = apigateway.LambdaIntegration(get_pokemons_lambda)
+        get_pokemon_integration = apigateway.LambdaIntegration(get_pokemon_lambda)
+        create_pokemon_integration = apigateway.LambdaIntegration(create_pokemon_lambda)
+        update_pokemon_integration = apigateway.LambdaIntegration(update_pokemon_lambda)
+        delete_pokemon_integration = apigateway.LambdaIntegration(delete_pokemon_lambda)
 
         # API Routes
         pokemons = api.root.add_resource("pokemons")
-        pokemons.add_method("GET", pokemon_integration)
-        pokemons.add_method("POST", pokemon_integration)
+        pokemons.add_method("GET", get_pokemons_integration)
+        pokemons.add_method("POST", create_pokemon_integration)
 
         pokemon_item = pokemons.add_resource("{id}")
-        pokemon_item.add_method("GET", pokemon_integration)
-        pokemon_item.add_method("PUT", pokemon_integration)
-        pokemon_item.add_method("DELETE", pokemon_integration)
+        pokemon_item.add_method("GET", get_pokemon_integration)
+        pokemon_item.add_method("PUT", update_pokemon_integration)
+        pokemon_item.add_method("DELETE", delete_pokemon_integration)
 
         # Output API URL
         cdk.CfnOutput(self, "ApiUrl", value=api.url)

@@ -13,15 +13,10 @@ class BackendStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # DynamoDB Table
-        pokemon_table = dynamodb.Table(
+        # Reference existing DynamoDB table
+        pokemon_table = dynamodb.Table.from_table_name(
             self, "PokemonTable",
-            table_name="PokemonTable",
-            partition_key=dynamodb.Attribute(
-                name="id",
-                type=dynamodb.AttributeType.STRING
-            ),
-            removal_policy=RemovalPolicy.DESTROY
+            table_name="PokemonTable"
         )
 
         # Lambda functions for each CRUD operation

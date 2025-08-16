@@ -93,6 +93,7 @@ class BackendStack(Stack):
 
         # Output API URL
         cdk.CfnOutput(self, "ApiUrl", value=api.url)
+        cdk.CfnOutput(self, "ApiEndpoint", value=f"{api.url}pokemons")
 
 app = cdk.App()
 BackendStack(app, "PokemonBackendStack")

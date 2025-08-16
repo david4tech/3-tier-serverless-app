@@ -64,7 +64,13 @@ jobs:
       run: |
         cd backend
         . venv/bin/activate
-        cdk deploy --require-approval never
+        cdk deploy --require-approval never --outputs-file outputs.json
+        
+    - name: Update Frontend API URL
+      run: |
+        cd backend
+        API_URL=$(cat outputs.json | jq -r '.PokemonBackendStack.ApiUrl')
+        echo "REACT_APP_API_URL=${API_URL}" > ../frontend/.env.production
       
     - name: Deploy Frontend
       run: |

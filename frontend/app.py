@@ -21,6 +21,7 @@ class FrontendStack(Stack):
             website_index_document="index.html",
             website_error_document="index.html",
             public_read_access=True,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ACLS,
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True
         )
